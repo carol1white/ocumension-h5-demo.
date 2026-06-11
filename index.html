@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>循迹欧康｜守护视觉，还原色彩探索计划</title>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    width: 100%;
+    min-height: 100vh;
+    background: #0d1024;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+    color: #fff;
+    overflow: hidden;
+  }
+
+  .phone {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    max-width: 430px;
+    margin: 0 auto;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 20% 15%, rgba(84, 130, 255, .45), transparent 28%),
+      radial-gradient(circle at 80% 20%, rgba(168, 97, 255, .35), transparent 30%),
+      radial-gradient(circle at 50% 85%, rgba(0, 224, 198, .25), transparent 32%),
+      linear-gradient(160deg, #10142d 0%, #11182f 46%, #070913 100%);
+  }
+
+  .grain {
+    position: absolute;
+    inset: 0;
+    opacity: .18;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 36px 36px;
+    mask-image: radial-gradient(circle, #000 40%, transparent 80%);
+  }
+
+  .blob {
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(28px);
+    opacity: .75;
+    animation: float 7s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+
+  .blob.b1 {
+    width: 160px;
+    height: 160px;
+    background: #476fff;
+    left: -42px;
+    top: 95px;
+  }
+
+  .blob.b2 {
+    width: 180px;
+    height: 180px;
+    background: #a55cff;
+    right: -55px;
+    top: 210px;
+    animation-delay: 1s;
+  }
+
+  .blob.b3 {
+    width: 140px;
+    height: 140px;
+    background: #00d8c6;
+    left: 110px;
+    bottom: -40px;
+    animation-delay: 2s;
+  }
+
+  @keyframes float {
+    from { transform: translate3d(0, 0, 0) scale(1); }
+    to { transform: translate3d(18px, -24px, 0) scale(1.08); }
+  }
+
+  .screen {
+    position: absolute;
+    inset: 0;
+    padding: 28px 24px 32px;
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    opacity: 0;
+    transform: translateX(18px);
+    transition: opacity .55s ease, transform .55s ease;
+    z-index: 2;
+  }
+
+  .screen.active {
+    display: flex;
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: rgba(255,255,255,.72);
+    letter-spacing: .3px;
+  }
+
+  .logo {
+    font-weight: 700;
+    letter-spacing: .8px;
+  }
+
+  .tag {
+    padding: 5px 9px;
+    border: 1px solid rgba(255,255,255,.22);
+    border-radius: 999px;
+    backdrop-filter: blur(12px);
+    background: rgba(255,255,255,.06);
+  }
+
+  .content {
+    position: relative;
+    z-index: 3;
+  }
+
+  .eyebrow {
+    font-size: 13px;
+    color: rgba(255,255,255,.62);
+    margin-bottom: 12px;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: 42px;
+    line-height: 1.08;
+    letter-spacing: -1.8px;
+    margin-bottom: 18px;
+  }
+
+  h2 {
+    font-size: 30px;
+    line-height: 1.15;
+    margin-bottom: 14px;
+    letter-spacing: -1px;
+  }
+
+  h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 15px;
+    line-height: 1.75;
+    color: rgba(255,255,255,.78);
+  }
+
+  .gradient-text {
+    background: linear-gradient(90deg, #ffe07a, #8bd9ff, #a48cff, #ff9b6a);
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .btns {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  button {
+    border: 0;
+    outline: 0;
+    border-radius: 999px;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: transform .18s ease, opacity .18s ease;
+  }
+
+  button:active {
+    transform: scale(.96);
+  }
+
+  .primary {
+    color: #081126;
+    background: linear-gradient(135deg, #fff 0%, #a9e8ff 45%, #b8a6ff 100%);
+    box-shadow: 0 14px 34px rgba(111, 152, 255, .35);
+  }
+
+  .secondary {
+    color: #fff;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.16);
+    backdrop-filter: blur(14px);
+  }
+
+  .note {
+    margin-top: 16px;
+    font-size: 12px;
+    color: rgba(255,255,255,.52);
+  }
+
+  .color-poem {
+    margin-top: 24px;
+    display: grid;
+    gap: 10px;
+  }
+
+  .poem-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: rgba(255,255,255,.72);
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    box-shadow: 0 0 18px currentColor;
+  }
+
+  .dot.gold { background: #ffd166; color: #ffd166; }
+  .dot.blue { background: #62b5ff; color: #62b5ff; }
+  .dot.green { background: #5be0b0; color: #5be0b0; }
+  .dot.orange { background: #ff9f5a; color: #ff9f5a; }
+
+  .nav-dots {
+    position: absolute;
+    left: 24px;
+    bottom: 18px;
+    display: flex;
+    gap: 6px;
+    z-index: 9;
+  }
+
+  .nav-dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.26);
+  }
+
+  .nav-dots span.active {
+    width: 20px;
+    background: #fff;
+  }
+
+  /* tunnel */
+  .tunnel-wrap {
+    position: relative;
+    height: 360px;
+    margin-top: 20px;
+    perspective: 700px;
+    overflow: hidden;
+    border-radius: 28px;
+    border: 1px solid rgba(255,255,255,.13);
+    background: rgba(255,255,255,.05);
+    backdrop-filter: blur(16px);
+  }
+
+  .rings {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+  }
+
+  .ring {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    border: 1px solid rgba(255,255,255,.38);
+    border-radius: 30%;
+    transform: translate(-50%, -50%) rotateX(58deg);
+    animation: tunnel 2.8s linear infinite;
+  }
+
+  .ring:nth-child(1) { width: 60px; height: 60px; animation-delay: 0s; border-color: rgba(255,255,255,.15); }
+  .ring:nth-child(2) { width: 110px; height: 110px; animation-delay: -.4s; border-color: rgba(140,210,255,.28); }
+  .ring:nth-child(3) { width: 160px; height: 160px; animation-delay: -.8s; border-color: rgba(180,130,255,.32); }
+  .ring:nth-child(4) { width: 220px; height: 220px; animation-delay: -1.2s; border-color: rgba(255,210,115,.30); }
+  .ring:nth-child(5) { width: 290px; height: 290px; animation-delay: -1.6s; border-color: rgba(80,230,190,.28); }
+  .ring:nth-child(6) { width: 360px; height: 360px; animation-delay: -2s; border-color: rgba(255,255,255,.12); }
+
+  @keyframes tunnel {
+    from {
+      transform: translate(-50%, -50%) rotateX(58deg) translateZ(-160px) scale(.65);
+      opacity: .15;
+    }
+    45% { opacity: .85; }
+    to {
+      transform: translate(-50%, -50%) rotateX(58deg) translateZ(240px) scale(1.45);
+      opacity: 0;
+    }
+  }
+
+  .map-pin {
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .pin-dot {
+    width: 78px;
+    height: 78px;
+    border-radius: 24px;
+    margin: 0 auto 14px;
+    background:
+      radial-gradient(circle at 30% 30%, #fff, transparent 25%),
+      linear-gradient(135deg, #526eff, #8b63ff 45%, #00d9c1);
+    box-shadow: 0 0 40px rgba(94,143,255,.7);
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+
+  .pin-title {
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  .pin-sub {
+    margin-top: 6px;
+    font-size: 12px;
+    color: rgba(255,255,255,.68);
+  }
+
+  .floating-boxes {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .med-box {
+    position: absolute;
+    width: 62px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(255,255,255,.14);
+    border: 1px solid rgba(255,255,255,.18);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 12px 30px rgba(0,0,0,.16);
+    animation: medfloat 4s ease-in-out infinite alternate;
+  }
+
+  .med-box::after {
+    content: "Ocu";
+    position: absolute;
+    left: 9px;
+    top: 11px;
+    font-size: 11px;
+    color: rgba(255,255,255,.78);
+  }
+
+  .med-box.m1 { left: 34px; top: 60px; background: rgba(67,119,255,.22); }
+  .med-box.m2 { right: 42px; top: 104px; background: rgba(255,157,94,.2); animation-delay: .8s; }
+  .med-box.m3 { left: 68px; bottom: 64px; background: rgba(100,229,193,.18); animation-delay: 1.2s; }
+
+  @keyframes medfloat {
+    from { transform: translateY(0) rotate(-8deg); }
+    to { transform: translateY(-16px) rotate(8deg); }
+  }
+
+  /* calibration */
+  .calibration-card {
+    padding: 18px;
+    border-radius: 28px;
+    background: rgba(255,255,255,.09);
+    border: 1px solid rgba(255,255,255,.14);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 18px 42px rgba(0,0,0,.18);
+  }
+
+  .vision-box {
+    position: relative;
+    height: 260px;
+    border-radius: 24px;
+    overflow: hidden;
+    margin: 16px 0;
+    background:
+      linear-gradient(135deg, #f6d365 0%, #fda085 20%, #84fab0 46%, #8fd3f4 68%, #a18cd1 100%);
+  }
+
+  .vision-box::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 25% 25%, rgba(255,255,255,.9), transparent 15%),
+      radial-gradient(circle at 70% 40%, rgba(255,255,255,.45), transparent 18%),
+      linear-gradient(135deg, rgba(9,15,42,.1), rgba(9,15,42,.45));
+  }
+
+  .blur-layer {
+    position: absolute;
+    inset: 0;
+    backdrop-filter: blur(14px) saturate(.5);
+    background: rgba(8,12,30,.28);
+    transition: opacity .25s ease;
+  }
+
+  .eye-mark {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 122px;
+    height: 74px;
+    transform: translate(-50%, -50%);
+    border: 2px solid rgba(255,255,255,.85);
+    border-radius: 999px 999px 999px 999px / 70% 70% 70% 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .eye-mark::after {
+    content: "";
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.85);
+    box-shadow: 0 0 24px rgba(255,255,255,.55);
+  }
+
+  input[type="range"] {
+    width: 100%;
+    accent-color: #a9e8ff;
+  }
+
+  .range-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: rgba(255,255,255,.62);
+    margin-top: 8px;
+  }
+
+  .success {
+    display: none;
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 18px;
+    background: rgba(95, 255, 205, .12);
+    border: 1px solid rgba(95, 255, 205, .25);
+    color: #bfffee;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .success.show {
+    display: block;
+  }
+
+  /* credential */
+  .credential {
+    position: relative;
+    margin-top: 20px;
+    padding: 22px;
+    border-radius: 32px;
+    background:
+      linear-gradient(135deg, rgba(255,255,255,.22), rgba(255,255,255,.08)),
+      radial-gradient(circle at 80% 20%, rgba(120,210,255,.3), transparent 35%);
+    border: 1px solid rgba(255,255,255,.2);
+    backdrop-filter: blur(20px);
+    overflow: hidden;
+    box-shadow: 0 22px 50px rgba(0,0,0,.22);
+  }
+
+  .credential::before {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 999px;
+    right: -80px;
+    top: -100px;
+    background: rgba(255,255,255,.12);
+  }
+
+  .credential-title {
+    position: relative;
+    font-size: 13px;
+    color: rgba(255,255,255,.66);
+    margin-bottom: 6px;
+  }
+
+  .credential-name {
+    position: relative;
+    font-size: 30px;
+    font-weight: 850;
+    line-height: 1.1;
+    margin-bottom: 18px;
+  }
+
+  .credential-info {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    color: rgba(255,255,255,.78);
+  }
+
+  .qr-wrap {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+  }
+
+  .qr {
+    width: 112px;
+    height: 112px;
+    border-radius: 18px;
+    padding: 10px;
+    background: #fff;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+
+  .qr i {
+    background: #10142d;
+    border-radius: 2px;
+  }
+
+  .qr i:nth-child(2n) { opacity: .18; }
+  .qr i:nth-child(3n) { opacity: .8; }
+  .qr i:nth-child(5n) { opacity: .45; }
+
+  .qr-copy {
+    flex: 1;
+    font-size: 12px;
+    color: rgba(255,255,255,.68);
+    line-height: 1.55;
+  }
+
+  .stamp {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    width: 72px;
+    height: 72px;
+    border: 1px solid rgba(255,255,255,.28);
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(-12deg);
+    color: rgba(255,255,255,.72);
+    font-size: 11px;
+    text-align: center;
+  }
+
+  /* onsite */
+  .progress-wrap {
+    margin: 18px 0 16px;
+    padding: 16px;
+    border-radius: 24px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.14);
+  }
+
+  .progress-head {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+
+  .bar {
+    width: 100%;
+    height: 9px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.12);
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    width: 0%;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ffe07a, #8bd9ff, #a48cff, #5df1ce);
+    transition: width .35s ease;
+  }
+
+  .stations {
+    display: grid;
+    gap: 10px;
+    max-height: 48vh;
+    overflow: auto;
+    padding-right: 4px;
+  }
+
+  .station {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px;
+    border-radius: 20px;
+    background: rgba(255,255,255,.075);
+    border: 1px solid rgba(255,255,255,.11);
+  }
+
+  .station.done {
+    background: rgba(111, 232, 210, .13);
+    border-color: rgba(111, 232, 210, .3);
+  }
+
+  .station-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,.1);
+    font-size: 18px;
+  }
+
+  .station.done .station-icon {
+    background: linear-gradient(135deg, #8bd9ff, #5df1ce);
+    color: #071126;
+  }
+
+  .station-copy {
+    flex: 1;
+  }
+
+  .station-copy strong {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  .station-copy span {
+    display: block;
+    font-size: 11px;
+    color: rgba(255,255,255,.58);
+    line-height: 1.35;
+  }
+
+  .station button {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .gift-card {
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 20px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.12);
+    font-size: 12px;
+    color: rgba(255,255,255,.72);
+    line-height: 1.55;
+  }
+
+  .gift-card strong {
+    color: #fff;
+  }
+
+  .modal {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: flex-end;
+    background: rgba(0,0,0,.42);
+    z-index: 20;
+  }
+
+  .modal.show {
+    display: flex;
+  }
+
+  .modal-card {
+    width: 100%;
+    padding: 24px;
+    border-radius: 30px 30px 0 0;
+    background:
+      radial-gradient(circle at 80% 20%, rgba(160,130,255,.28), transparent 30%),
+      #121831;
+    border-top: 1px solid rgba(255,255,255,.16);
+    box-shadow: 0 -20px 50px rgba(0,0,0,.28);
+  }
+
+  .mbti-card {
+    margin-top: 14px;
+    padding: 16px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, rgba(139,217,255,.18), rgba(164,140,255,.2));
+    border: 1px solid rgba(255,255,255,.16);
+  }
+
+  .fridge {
+    width: 80px;
+    height: 80px;
+    border-radius: 24px;
+    margin: 12px 0;
+    background:
+      radial-gradient(circle at 30% 25%, #fff, transparent 20%),
+      linear-gradient(135deg, #8bd9ff, #a48cff 55%, #ffb16e);
+    box-shadow: 0 12px 30px rgba(130,160,255,.35);
+  }
+
+  .small {
+    font-size: 12px;
+    color: rgba(255,255,255,.58);
+    line-height: 1.55;
+  }
+
+  @media (max-height: 700px) {
+    h1 { font-size: 36px; }
+    h2 { font-size: 26px; }
+    .tunnel-wrap { height: 300px; }
+    .vision-box { height: 220px; }
+  }
+</style>
+</head>
+
+<body>
+  <div class="phone">
+    <div class="grain"></div>
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+
+    <!-- Screen 1 -->
+    <section class="screen active" id="screen0">
+      <div class="topbar">
+        <div class="logo">OcuMension</div>
+        <div class="tag">2026 CCOS 天津</div>
+      </div>
+
+      <div class="content">
+        <div class="eyebrow">Follow the Vision</div>
+        <h1>世界是<br><span class="gradient-text">什么颜色的？</span></h1>
+        <p>
+          是清晨第一缕光穿过窗纱的淡金，<br>
+          是孩子梦里的天车菊蓝，<br>
+          是夜晚城市灯火中的暖橙。
+        </p>
+
+        <div class="color-poem">
+          <div class="poem-line"><span class="dot gold"></span>所有色彩，都始于一双能看见的眼睛</div>
+          <div class="poem-line"><span class="dot blue"></span>守护视觉，守护世界原本的样子</div>
+          <div class="poem-line"><span class="dot green"></span>欧康维视，为每一双眼睛还原生命本色</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="btns">
+          <button class="primary" onclick="nextScreen()">开启循迹欧康</button>
+        </div>
+        <div class="note">前期预热 H5｜扫码进入视界探索</div>
+      </div>
+    </section>
+
+    <!-- Screen 2 -->
+    <section class="screen" id="screen1">
+      <div class="topbar">
+        <div class="logo">循迹欧康</div>
+        <div class="tag">Step 01</div>
+      </div>
+
+      <div class="content">
+        <div class="eyebrow">One-shot 3D Journey</div>
+        <h2>跟随光轨，<br>抵达天津展台坐标</h2>
+        <p>
+          从城市坐标出发，穿过色彩光轨，提前预览欧康维视 2026 CCOS 展台。
+        </p>
+
+        <div class="tunnel-wrap">
+          <div class="rings">
+            <div class="ring"></div>
+            <div class="ring"></div>
+            <div class="ring"></div>
+            <div class="ring"></div>
+            <div class="ring"></div>
+            <div class="ring"></div>
+          </div>
+
+          <div class="floating-boxes">
+            <div class="med-box m1"></div>
+            <div class="med-box m2"></div>
+            <div class="med-box m3"></div>
+          </div>
+
+          <div class="map-pin">
+            <div class="pin-dot"></div>
+            <div class="pin-title">天津 · CCOS</div>
+            <div class="pin-sub">2026.09.09-12｜770㎡ 展台</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btns">
+        <button class="primary" onclick="nextScreen()">解锁展台坐标</button>
+        <button class="secondary" onclick="prevScreen()">返回</button>
+      </div>
+    </section>
+
+    <!-- Screen 3 -->
+    <section class="screen" id="screen2">
+      <div class="topbar">
+        <div class="logo">视界校准</div>
+        <div class="tag">Step 02</div>
+      </div>
+
+      <div class="content">
+        <div class="eyebrow">Vision Calibration</div>
+        <h2>滑动校准，<br>还原色彩</h2>
+        <p>
+          拖动下方滑块，让模糊的色彩重新清晰。完成后即可获得现场探索凭证。
+        </p>
+
+        <div class="calibration-card">
+          <div class="vision-box">
+            <div class="blur-layer" id="blurLayer"></div>
+            <div class="eye-mark"></div>
+          </div>
+
+          <input type="range" min="0" max="100" value="0" id="range" oninput="calibrate(this.value)" />
+          <div class="range-row">
+            <span>模糊</span>
+            <span>清晰</span>
+          </div>
+
+          <div class="success" id="success">
+            视界校准完成。<br>
+            欧康维视 2026 CCOS 展台坐标已解锁。
+          </div>
+        </div>
+      </div>
+
+      <div class="btns">
+        <button class="primary" id="credentialBtn" onclick="nextScreen()" style="opacity:.45; pointer-events:none;">生成现场凭证</button>
+        <button class="secondary" onclick="prevScreen()">返回</button>
+      </div>
+    </section>
+
+    <!-- Screen 4 -->
+    <section class="screen" id="screen3">
+      <div class="topbar">
+        <div class="logo">现场凭证</div>
+        <div class="tag">Step 03</div>
+      </div>
+
+      <div class="content">
+        <div class="eyebrow">Explorer Pass</div>
+        <h2>你的<br><span class="gradient-text">视界探索凭证</span></h2>
+        <p>请于展会期间凭此页面至欧康维视展台入口，领取 NFC「视界探索环」。</p>
+
+        <div class="credential">
+          <div class="credential-title">2026 OcuMension CCOS</div>
+          <div class="credential-name">视界探索者</div>
+
+          <div class="credential-info">
+            <div>地点：天津｜31th CCOS</div>
+            <div>时间：2026.09.09 - 09.12</div>
+            <div>任务：抬头识别 · 循迹探索 · 点亮视界</div>
+          </div>
+
+          <div class="qr-wrap">
+            <div class="qr" id="fakeQr"></div>
+            <div class="qr-copy">
+              出示此凭证<br>
+              领取 NFC 视界探索环<br>
+              开启现场打卡地图
+            </div>
+          </div>
+
+          <div class="stamp">PASS<br>2026</div>
+        </div>
+      </div>
+
+      <div class="btns">
+        <button class="primary" onclick="nextScreen()">模拟到达现场</button>
+        <button class="secondary" onclick="prevScreen()">返回</button>
+      </div>
+    </section>
+
+    <!-- Screen 5 -->
+    <section class="screen" id="screen4">
+      <div class="topbar">
+        <div class="logo">现场打卡 H5</div>
+        <div class="tag">NFC 已绑定</div>
+      </div>
+
+      <div class="content">
+        <div class="eyebrow">Onsite Mission Map</div>
+        <h2>抬头识别<br><span class="gradient-text">循迹探索</span></h2>
+        <p>
+          跟随顶部「空中药盒坐标」，完成展台互动、小讲堂与专题会打卡，逐步点亮完整视界。
+        </p>
+
+        <div class="progress-wrap">
+          <div class="progress-head">
+            <span>视界点亮进度</span>
+            <strong id="progressText">0/6</strong>
+          </div>
+          <div class="bar">
+            <div class="bar-fill" id="barFill"></div>
+          </div>
+        </div>
+
+        <div class="stations">
+          <div class="station" data-id="0">
+            <div class="station-icon">☁️</div>
+            <div class="station-copy">
+              <strong>抬头识别｜空中药盒坐标</strong>
+              <span>打破常规视线习惯，找到展台上方的视觉坐标。</span>
+            </div>
+            <button class="secondary" onclick="checkin(0)">碰一下</button>
+          </div>
+
+          <div class="station" data-id="1">
+            <div class="station-icon">🎨</div>
+            <div class="station-copy">
+              <strong>色彩识别挑战</strong>
+              <span>根据药盒色块识别对应产品，完成趣味答题。</span>
+            </div>
+            <button class="secondary" onclick="checkin(1)">打卡</button>
+          </div>
+
+          <div class="station" data-id="2">
+            <div class="station-icon">🧬</div>
+            <div class="station-copy">
+              <strong>视界 MBTI</strong>
+              <span>完成用眼习惯测试，生成专属卡牌与主题冰箱贴。</span>
+            </div>
+            <button class="secondary" onclick="openMbti()">测试</button>
+          </div>
+
+          <div class="station" data-id="3">
+            <div class="station-icon">☕</div>
+            <div class="station-copy">
+              <strong>城市限定体验</strong>
+              <span>Logo 松饼 / 星巴克联动咖啡，完成阶段任务后兑换。</span>
+            </div>
+            <button class="secondary" onclick="checkin(3)">兑换</button>
+          </div>
+
+          <div class="station" data-id="4">
+            <div class="station-icon">🎤</div>
+            <div class="station-copy">
+              <strong>展台小讲堂</strong>
+              <span>参与展台学术分享，完成内容站点签到。</span>
+            </div>
+            <button class="secondary" onclick="checkin(4)">签到</button>
+          </div>
+
+          <div class="station" data-id="5">
+            <div class="station-icon">💡</div>
+            <div class="station-copy">
+              <strong>专题会打卡</strong>
+              <span>联动 CCOS 系列学术项目，解锁完整探索礼遇。</span>
+            </div>
+            <button class="secondary" onclick="checkin(5)">签到</button>
+          </div>
+        </div>
+
+        <div class="gift-card" id="giftText">
+          <strong>当前礼遇：</strong>完成 1 站可领取基础礼；完成 3 站可解锁城市限定咖啡 / Logo 松饼；完成全部点位可领取升级伴手礼或抽奖资格。
+        </div>
+      </div>
+
+      <div class="btns">
+        <button class="primary" onclick="resetCheckin()">重置预览</button>
+        <button class="secondary" onclick="prevScreen()">查看凭证</button>
+      </div>
+    </section>
+
+    <div class="nav-dots" id="navDots"></div>
+
+    <div class="modal" id="modal">
+      <div class="modal-card">
+        <div class="eyebrow">Vision MBTI</div>
+        <h3>你的视界人格已生成</h3>
+        <p>
+          根据你的用眼习惯与色彩感知偏好，你属于：
+        </p>
+
+        <div class="mbti-card">
+          <h3 class="gradient-text">色彩感知型</h3>
+          <div class="fridge"></div>
+          <p class="small">
+            你对色彩变化更敏锐，也更关注生活中的细节光感。完成该站点后，可领取对应主题冰箱贴。
+          </p>
+        </div>
+
+        <div style="height:18px"></div>
+        <div class="btns">
+          <button class="primary" onclick="finishMbti()">领取冰箱贴并打卡</button>
+          <button class="secondary" onclick="closeModal()">稍后再看</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  let current = 0;
+  const totalScreens = 5;
+  const checked = new Set();
+
+  function initDots() {
+    const nav = document.getElementById('navDots');
+    nav.innerHTML = '';
+    for (let i = 0; i < totalScreens; i++) {
+      const s = document.createElement('span');
+      if (i === current) s.className = 'active';
+      nav.appendChild(s);
+    }
+  }
+
+  function updateScreen() {
+    for (let i = 0; i < totalScreens; i++) {
+      document.getElementById('screen' + i).classList.remove('active');
+    }
+    document.getElementById('screen' + current).classList.add('active');
+
+    const dots = document.querySelectorAll('#navDots span');
+    dots.forEach((d, i) => {
+      d.className = i === current ? 'active' : '';
+    });
+  }
+
+  function nextScreen() {
+    if (current < totalScreens - 1) {
+      current++;
+      updateScreen();
+    }
+  }
+
+  function prevScreen() {
+    if (current > 0) {
+      current--;
+      updateScreen();
+    }
+  }
+
+  function calibrate(value) {
+    const blur = document.getElementById('blurLayer');
+    const success = document.getElementById('success');
+    const btn = document.getElementById('credentialBtn');
+
+    const opacity = Math.max(0, 1 - value / 100);
+    blur.style.opacity = opacity;
+
+    if (value >= 92) {
+      success.classList.add('show');
+      btn.style.opacity = '1';
+      btn.style.pointerEvents = 'auto';
+    } else {
+      success.classList.remove('show');
+      btn.style.opacity = '.45';
+      btn.style.pointerEvents = 'none';
+    }
+  }
+
+  function buildQr() {
+    const qr = document.getElementById('fakeQr');
+    for (let i = 0; i < 49; i++) {
+      const cell = document.createElement('i');
+      if ([0,1,7,8,5,6,12,13,35,36,42,43,47,48].includes(i)) {
+        cell.style.opacity = '1';
+      }
+      qr.appendChild(cell);
+    }
+  }
+
+  function checkin(id) {
+    checked.add(id);
+    renderCheckin();
+
+    const stationNames = [
+      '空中药盒坐标已点亮',
+      '色彩识别挑战已完成',
+      '视界 MBTI 已完成',
+      '城市限定体验已解锁',
+      '展台小讲堂已签到',
+      '专题会已签到'
+    ];
+
+    showToast(stationNames[id] || '打卡完成');
+  }
+
+  function renderCheckin() {
+    const count = checked.size;
+    const all = 6;
+    const percent = (count / all) * 100;
+
+    document.getElementById('progressText').innerText = count + '/' + all;
+    document.getElementById('barFill').style.width = percent + '%';
+
+    document.querySelectorAll('.station').forEach(item => {
+      const id = Number(item.getAttribute('data-id'));
+      if (checked.has(id)) {
+        item.classList.add('done');
+        const btn = item.querySelector('button');
+        btn.innerText = '已完成';
+        btn.style.opacity = '.6';
+      } else {
+        item.classList.remove('done');
+      }
+    });
+
+    const gift = document.getElementById('giftText');
+    if (count >= 6) {
+      gift.innerHTML = '<strong>已解锁 LAYER 3：</strong>可领取升级伴手礼 / 抽奖资格。推荐礼品：便携风扇、小型眼部按摩仪、品牌雨伞、颈枕 / 午休毯。';
+    } else if (count >= 3) {
+      gift.innerHTML = '<strong>已解锁 LAYER 2：</strong>可兑换城市限定体验，如 Logo 松饼 / 星巴克联动咖啡，也可领取折叠水杯、便携药盒等阶段礼。';
+    } else if (count >= 1) {
+      gift.innerHTML = '<strong>已解锁 LAYER 1：</strong>可领取基础礼遇，如品牌手机磁吸支架、手机擦、便签本、定制笔等。';
+    } else {
+      gift.innerHTML = '<strong>当前礼遇：</strong>完成 1 站可领取基础礼；完成 3 站可解锁城市限定咖啡 / Logo 松饼；完成全部点位可领取升级伴手礼或抽奖资格。';
+    }
+  }
+
+  function resetCheckin() {
+    checked.clear();
+    renderCheckin();
+  }
+
+  function openMbti() {
+    document.getElementById('modal').classList.add('show');
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('show');
+  }
+
+  function finishMbti() {
+    closeModal();
+    checkin(2);
+  }
+
+  function showToast(text) {
+    const toast = document.createElement('div');
+    toast.innerText = text;
+    toast.style.position = 'absolute';
+    toast.style.left = '50%';
+    toast.style.top = '52px';
+    toast.style.transform = 'translateX(-50%)';
+    toast.style.padding = '10px 16px';
+    toast.style.borderRadius = '999px';
+    toast.style.background = 'rgba(255,255,255,.18)';
+    toast.style.border = '1px solid rgba(255,255,255,.22)';
+    toast.style.backdropFilter = 'blur(14px)';
+    toast.style.color = '#fff';
+    toast.style.fontSize = '13px';
+    toast.style.zIndex = '30';
+    toast.style.boxShadow = '0 12px 30px rgba(0,0,0,.25)';
+    document.querySelector('.phone').appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.transition = 'opacity .35s ease, transform .35s ease';
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(-50%) translateY(-10px)';
+    }, 1200);
+
+    setTimeout(() => {
+      toast.remove();
+    }, 1650);
+  }
+
+  initDots();
+  buildQr();
+</script>
+</body>
+</html>
